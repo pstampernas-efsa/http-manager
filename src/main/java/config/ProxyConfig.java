@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import proxy.ProxyMode;
 
 /**
@@ -16,6 +19,8 @@ import proxy.ProxyMode;
  * @author shahaal
  */
 public class ProxyConfig {
+	
+	private static final Logger LOGGER = LogManager.getLogger(ProxyConfig.class);
 
 	private String PROXY_CONFIG_PATH = "config/proxyConfig.xml";
 	
@@ -43,6 +48,7 @@ public class ProxyConfig {
 	 */
 	private boolean isInCurrentFolder() {
 		File file = new File(PROXY_CONFIG_PATH);
+		LOGGER.info("The configuration file is in the current folder: " + file.exists());
 		return file.exists();
 	}
 	
@@ -77,6 +83,7 @@ public class ProxyConfig {
 		try {
 			name = getValue(PROXY_CONFIG_PATH, PROXY_HOST_NAME);
 		} catch (IOException e) {
+			LOGGER.error("Error in getting value for proxy hostname: ", e);
 			name = getFromParent(PROXY_HOST_NAME);
 		}
 
@@ -94,6 +101,7 @@ public class ProxyConfig {
 			port = getValue(PROXY_CONFIG_PATH, PROXY_PORT);
 		}
 		catch (IOException e) {
+			LOGGER.error("Error in getting value for proxy port: ", e);
 			port = getFromParent(PROXY_PORT);
 		}
 		
@@ -106,6 +114,7 @@ public class ProxyConfig {
 		try {
 			mode = getValue(PROXY_CONFIG_PATH, PROXY_MODE);
 		} catch (IOException e) {
+			LOGGER.error("Error in getting value for proxy mode: ", e);
 			mode = getFromParent(PROXY_MODE);
 		}
 
@@ -139,7 +148,7 @@ public class ProxyConfig {
 		try(InputStream stream = new FileInputStream(filename)) {
 			properties.loadFromXML(stream);
 		}
-
+		LOGGER.info("Application properties from the xml file: ", properties);
 		return properties;
 	}
 	
